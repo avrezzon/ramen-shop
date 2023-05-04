@@ -8,6 +8,8 @@ import java.util.List;
 @Data
 @Builder
 public class Ramen {
+
+    private String menuCode;
     private String name;
     private List<Serving> recipe;
     private Double price;

@@ -1,6 +1,8 @@
 package com.ramenshop.server.model;
 
-public enum Measurement {
+import java.io.Serializable;
+
+public enum Measurement implements Serializable {
     cup,
     oz,
     tsp,

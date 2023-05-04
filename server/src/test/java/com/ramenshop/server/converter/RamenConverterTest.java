@@ -4,6 +4,7 @@ import com.ramenshop.server.dto.RamenDto;
 import com.ramenshop.server.model.Measurement;
 import com.ramenshop.server.model.Ramen;
 import com.ramenshop.server.model.Serving;
+import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,7 @@ public class RamenConverterTest {
 
     public static final String NAME = "Tonkotsu";
     public static final double PRICE = 12.59;
+    public static final String MENU_CODE = "1A";
     private RamenConverter converter;
 
     @BeforeEach
@@ -28,6 +30,7 @@ public class RamenConverterTest {
     public void convertRamenToDto(){
         Ramen source = Ramen.builder()
                 .name(NAME)
+                .menuCode(MENU_CODE)
                 .recipe(List.of(
                         new Serving("Pork bone broth", 3.0, Measurement.cup),
                         new Serving("Noodles", 1.0, Measurement.lbs),
@@ -40,6 +43,7 @@ public class RamenConverterTest {
 
         assertNotNull(result);
         assertEquals(NAME, result.getName());
+        assertEquals(MENU_CODE, result.getMenuCode());
         assertEquals(PRICE, result.getPrice());
         assertEquals(3, result.getIngredients().size());
     }

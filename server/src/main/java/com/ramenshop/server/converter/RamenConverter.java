@@ -12,6 +12,7 @@ public class RamenConverter implements Converter<Ramen, RamenDto> {
     public RamenDto convert(Ramen source) {
         return RamenDto.builder()
                 .name(source.getName())
+                .menuCode(source.getMenuCode())
                 .ingredients(source.getRecipe()
                         .stream().map(Serving::getFood)
                         .collect(Collectors.toList()))
