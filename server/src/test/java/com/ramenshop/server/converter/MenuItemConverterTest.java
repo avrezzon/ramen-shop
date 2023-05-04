@@ -1,5 +1,6 @@
 package com.ramenshop.server.converter;
 
+import com.ramenshop.server.dto.MenuItemDto;
 import com.ramenshop.server.dto.RamenDto;
 import com.ramenshop.server.model.Measurement;
 import com.ramenshop.server.model.Ramen;
@@ -9,42 +10,35 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
-
-public class RamenConverterTest {
-
+class MenuItemConverterTest {
     public static final String NAME = "Tonkotsu";
     public static final double PRICE = 12.59;
-    public static final String MENU_CODE = "1A";
-    private RamenConverter converter;
+    private MenuItemConverter converter;
 
     @BeforeEach
     void init(){
-        converter = new RamenConverter();
+        converter = new MenuItemConverter();
     }
 
     @Test
     public void convertRamenToDto(){
-        Ramen source = Ramen.builder()
+        MenuItemDto source = MenuItemDto.builder()
                 .name(NAME)
-                .menuCode(MENU_CODE)
-                .recipe(List.of(
+                .ingredients(List.of(
                         new Serving("Pork bone broth", 3.0, Measurement.cup),
                         new Serving("Noodles", 1.0, Measurement.lbs),
                         new Serving("Roasted pork", 0.5, Measurement.lbs)
                 ))
-                .price(PRICE)
+                .suggestedPrice(PRICE)
                 .build();
 
-        RamenDto result = converter.convert(source);
+        Ramen result = converter.convert(source);
 
         assertNotNull(result);
         assertEquals(NAME, result.getName());
-        assertEquals(MENU_CODE, result.getMenuCode());
         assertEquals(PRICE, result.getPrice());
-        assertEquals(3, result.getIngredients().size());
+        assertEquals(3, result.getRecipe().size());
     }
-
 }
