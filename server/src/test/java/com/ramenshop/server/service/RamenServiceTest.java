@@ -1,5 +1,6 @@
 package com.ramenshop.server.service;
 
+import com.ramenshop.server.converter.MenuItemConverter;
 import com.ramenshop.server.converter.RamenConverter;
 import com.ramenshop.server.exception.RamenNotFoundException;
 import com.ramenshop.server.model.Measurement;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.convert.support.GenericConversionService;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +27,7 @@ public class RamenServiceTest {
 
 
     private RamenRepository ramenRepository;
+    private GenericConversionService conversionService;
 
     private RamenService service;
 
@@ -45,8 +48,11 @@ public class RamenServiceTest {
 
     @BeforeEach
     void init(){
+        this.conversionService = new GenericConversionService();
+        this.conversionService.addConverter(new RamenConverter());
+        this.conversionService.addConverter(new MenuItemConverter());
         this.ramenRepository = Mockito.mock(RamenRepository.class);
-        this.service = new RamenService(new RamenConverter(), this.ramenRepository);
+        this.service = new RamenService(this.conversionService, this.ramenRepository);
     }
 
     @Test

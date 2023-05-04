@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @Document
 public class Ramen {
 

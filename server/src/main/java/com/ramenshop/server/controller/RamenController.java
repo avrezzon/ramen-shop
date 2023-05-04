@@ -7,8 +7,10 @@ import com.ramenshop.server.service.RamenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,6 +43,7 @@ public class RamenController {
 
     //TODO probably will want authentication here, i.e managers should be the one to create the menu offering
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "This will create a new ramen offering on the menu, could vary with different ingredients" +
             " but will result in a new menu code each time this is called")
     @ApiResponses(value = {
@@ -48,8 +51,9 @@ public class RamenController {
             @ApiResponse(responseCode = "400", description = "Invalid request was sent, all fields must be populated"),
             @ApiResponse(responseCode = "403", description = "The current user is unable to perform this request due to privilege")
     })
-    public RamenDto createNewRamenRecipe(@RequestBody MenuItemDto recipeDto){
-        return null;
+    public RamenDto createNewRamenRecipe(@Valid @RequestBody MenuItemDto recipeDto){
+        log.info("Received request to create {}", recipeDto);
+        return ramenService.createNewMenuItem(recipeDto);
     }
 
     @PutMapping("/{menuCode}")
@@ -60,8 +64,8 @@ public class RamenController {
             @ApiResponse(responseCode = "403", description = "The current user is unable to perform this request due to privilege"),
             @ApiResponse(responseCode = "404", description = "Could not find ramen by specified menu code")
     })
-    public RamenDto updateExistingOffering(@PathVariable String menuCode, @RequestBody MenuItemDto reviseRamenDto){
-        return null;
+    public RamenDto updateExistingOffering(@PathVariable String menuCode, @Valid @RequestBody MenuItemDto reviseRamenDto){
+        return ramenService.updateMenuItem(menuCode, reviseRamenDto);
     }
 
     //TODO look into the patch method for simple revisions to the resource
@@ -78,13 +82,16 @@ public class RamenController {
     }
 
     @DeleteMapping("/{menuCode}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "This will remove entry of ramen from the menu")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "The ramen entry was updated successfully"),
             @ApiResponse(responseCode = "403", description = "The current user is unable to perform this request due to privilege"),
             @ApiResponse(responseCode = "404", description = "Could not find ramen by specified menu code")
     })
-    public void deleteRamenOffering(@PathVariable String menuCode){}
+    public void deleteRamenOffering(@PathVariable String menuCode){
+        ramenService.deleteMenuItem(menuCode);
+    }
 
 }
 
