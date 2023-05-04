@@ -7,6 +7,7 @@ import com.ramenshop.server.repository.RamenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,19 +19,19 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RamenService {
 
-    private final ConversionService converter;
+    private final Converter<Ramen, RamenDto> converter;
     private final RamenRepository ramenRepository;
 
     public List<RamenDto> findAllRamenOfferings() {
         log.info("Retrieving all of the ramen from the menu...");
         return ramenRepository.findAll()
                 .stream()
-                .map(ramen -> converter.convert(ramen, RamenDto.class))
+                .map(converter::convert)
                 .collect(Collectors.toList());
     }
 
     public RamenDto findRamenByMenuCode(String menuCode){
-        return converter.convert(findRamenEntry(menuCode), RamenDto.class);
+        return converter.convert(findRamenEntry(menuCode));
     }
 
     private Ramen findRamenEntry(String menuCode){
