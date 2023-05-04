@@ -1,5 +1,6 @@
 package com.ramenshop.server.controller;
 
+import com.github.fge.jsonpatch.JsonPatch;
 import com.ramenshop.server.dto.MenuItemDto;
 import com.ramenshop.server.dto.RamenDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,14 +62,14 @@ public class RamenController {
     //TODO look into the patch method for simple revisions to the resource
     //  without having to supply the entire resource https://www.baeldung.com/spring-rest-json-patch
 
-    @PatchMapping("/{menuCode}")
+    @PatchMapping(path ="/{menuCode}", consumes = "application/json-patch+json")
     @Operation(summary = "This will update an existing entry of ramen, and is to be used if one field needs to be changed")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "The ramen entry was updated successfully"),
             @ApiResponse(responseCode = "403", description = "The current user is unable to perform this request due to privilege"),
             @ApiResponse(responseCode = "404", description = "Could not find ramen by specified menu code")
     })
-    public void updateExistingOfferingField(@PathVariable String menuCode){
+    public void updateExistingOfferingField(@PathVariable String menuCode, @RequestBody JsonPatch patch){
     }
 
     @DeleteMapping("/{menuCode}")
