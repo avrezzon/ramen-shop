@@ -3,24 +3,31 @@ package com.ramenshop.server.controller;
 import com.github.fge.jsonpatch.JsonPatch;
 import com.ramenshop.server.dto.MenuItemDto;
 import com.ramenshop.server.dto.RamenDto;
+import com.ramenshop.server.service.RamenService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("ramen")
+@RequiredArgsConstructor
 public class RamenController {
 
     //For the status codes, I am referencing https://restfulapi.net/http-methods/
 
+    private final RamenService ramenService;
+
     @GetMapping
     @Operation(summary = "Get the current menu offering of all of the available ramen")
     public List<RamenDto> getAllRamen(){
-        return Collections.emptyList();
+        return ramenService.findAllRamenOfferings();
     }
 
     @GetMapping("/{menuCode}")
@@ -30,7 +37,7 @@ public class RamenController {
             @ApiResponse(responseCode = "404", description = "Could not find ramen by specified menu code, i.e. 1. A -> Tonkotsu")
     })
     public RamenDto getRamen(@PathVariable String menuCode){
-        return null;
+        return ramenService.findRamenByMenuCode(menuCode);
     }
 
     //TODO probably will want authentication here, i.e managers should be the one to create the menu offering
@@ -82,3 +89,4 @@ public class RamenController {
     public void deleteRamenOffering(@PathVariable String menuCode){}
 
 }
+
