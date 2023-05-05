@@ -1,5 +1,10 @@
 package com.ramenshop.server.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import com.ramenshop.server.dto.MenuItemDto;
 import com.ramenshop.server.dto.RamenDto;
 import com.ramenshop.server.exception.RamenNotFoundException;
@@ -21,6 +26,7 @@ public class RamenService {
 
     private final ConversionService converter;
     private final RamenRepository ramenRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public List<RamenDto> findAllRamenOfferings() {
         log.info("Retrieving all of the ramen from the menu...");
@@ -52,6 +58,17 @@ public class RamenService {
         return converter.convert(updatedEntry, RamenDto.class);
     }
 
+    public RamenDto patchMenuItem(String menuCode, JsonPatch patch){
+        Ramen ramen = findRamenEntry(menuCode);
+        try {
+            var updatedRamen  = applyPatchToRamen(patch, ramen);
+            var updatedEntry = ramenRepository.save(updatedRamen);
+            return converter.convert(updatedEntry, RamenDto.class);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void deleteMenuItem(String menuCode){
         Ramen entry = findRamenEntry(menuCode);
         log.info("Now deleting menu entry: {}", entry.getMenuCode());
@@ -67,5 +84,9 @@ public class RamenService {
         return optionalRamen.get();
     }
 
+    private Ramen applyPatchToRamen(JsonPatch patch, Ramen target) throws JsonPatchException, JsonProcessingException {
+        JsonNode patched = patch.apply(objectMapper.convertValue(target, JsonNode.class));
+        return objectMapper.treeToValue(patched, Ramen.class);
+    }
 
 }

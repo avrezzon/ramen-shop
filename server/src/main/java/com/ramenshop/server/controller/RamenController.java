@@ -20,9 +20,6 @@ import java.util.List;
 @RequestMapping("ramen")
 @RequiredArgsConstructor
 public class RamenController {
-
-    //For the status codes, I am referencing https://restfulapi.net/http-methods/
-
     private final RamenService ramenService;
 
     @GetMapping
@@ -68,17 +65,15 @@ public class RamenController {
         return ramenService.updateMenuItem(menuCode, reviseRamenDto);
     }
 
-    //TODO look into the patch method for simple revisions to the resource
-    //  without having to supply the entire resource https://www.baeldung.com/spring-rest-json-patch
-
     @PatchMapping(path ="/{menuCode}", consumes = "application/json-patch+json")
     @Operation(summary = "This will update an existing entry of ramen, and is to be used if one field needs to be changed")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "The ramen entry was updated successfully"),
+            @ApiResponse(responseCode = "200", description = "The ramen entry was updated successfully"),
             @ApiResponse(responseCode = "403", description = "The current user is unable to perform this request due to privilege"),
             @ApiResponse(responseCode = "404", description = "Could not find ramen by specified menu code")
     })
-    public void updateExistingOfferingField(@PathVariable String menuCode, @RequestBody JsonPatch patch){
+    public RamenDto updateExistingOfferingField(@PathVariable String menuCode, @RequestBody JsonPatch patch){
+        return ramenService.patchMenuItem(menuCode, patch);
     }
 
     @DeleteMapping("/{menuCode}")
