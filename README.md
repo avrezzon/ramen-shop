@@ -19,3 +19,11 @@ The client application is built with React
   - Bootstrap and Reactstrap were installed to assist with component development for ease of use
   - Reactstrap documentation can be found [here](https://reactstrap.github.io/?path=/docs/home-installation--page)
     - navigate to the components to see utilization and implementation
+
+
+---
+Resources/References:
+Server:
+- Using appropriate status codes with REST verbs [link](https://restfulapi.net/http-methods/)
+- Documenting the Rest controller with OpenAPI [link](https://www.baeldung.com/spring-rest-openapi-documentation)
+- JSON patch with Spring boot [link](https://www.baeldung.com/spring-rest-json-patch)
